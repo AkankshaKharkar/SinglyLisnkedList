@@ -1,0 +1,252 @@
+#include<iostream>
+using namespace std;
+
+typedef int BOOL;
+#define TRUE 1
+#define FALSE 0
+typedef struct node
+{
+	int data;
+	struct node*next;
+}NODE,*PNODE;
+
+class Singly_Linear
+{
+private:
+	PNODE head;
+public:
+	Singly_Linear();
+	~Singly_Linear();
+	BOOL InsertFirst(int);//decn
+	BOOL InsertLast(int);
+	BOOL InsertAtPos(int,int);
+	void DisplayForward();
+	int Count();
+	int Search(int);
+	BOOL DeleteFirst();
+	BOOL DeleteLast();
+	BOOL DeleteAtPos(int);
+};
+Singly_Linear::Singly_Linear()
+{
+	head = NULL;
+}
+Singly_Linear::~Singly_Linear()
+{
+	PNODE temp,navigate;
+	if(head!=NULL)
+	{
+		navigate=head;
+		while(navigate!=NULL)
+		{
+			temp=navigate->next;
+			free(navigate);
+			navigate=temp;
+		}
+	}
+
+}
+
+BOOL Singly_Linear::InsertFirst(int value)
+{
+	PNODE newn=NULL;
+	newn=new NODE;
+	newn->data=value;
+	newn->next=NULL;
+	if(head==NULL)
+	{
+		head=newn;
+	}
+	else
+	{
+	  newn->next=head;
+	  head=newn;
+	}
+	return TRUE;
+}
+void Singly_Linear::DisplayForward()
+{
+	struct node*temp=head;
+	while(temp!=NULL)
+	{
+		printf("%d\n",temp->data);
+		temp=temp->next;
+	}
+}
+
+
+BOOL Singly_Linear::InsertLast(int value)
+{
+
+	PNODE newn=NULL;
+	newn=new NODE;
+	newn->data=value;
+	newn->next=NULL;
+	if(head==NULL)
+	{
+		head=newn;
+	}
+	else
+	{
+		struct node*temp=head;
+		while(temp->next!=NULL)
+		{
+			temp=temp->next;
+		}
+		temp->next=newn;
+	}
+	printf("inserted last node successfully\n");
+	return TRUE;
+}
+BOOL Singly_Linear::DeleteFirst()
+{
+	if(head==NULL)
+	{
+		return FALSE;
+	}
+	else
+	{
+		struct node*temp=head;
+		head=head->next;
+		free(temp);
+	}
+	printf("deleted first node successfully\n");
+	return TRUE;
+
+}
+BOOL Singly_Linear::DeleteLast()
+{
+	if(head==NULL)
+		{
+			return FALSE;
+		}
+	else
+		{
+			struct node*temp=head;
+			while(temp->next->next!=NULL)
+			{
+				temp=temp->next;
+			}
+			free(temp->next);
+			temp->next=NULL;
+		}
+	printf("deleted last node successfully\n");
+	return TRUE;
+}
+int Singly_Linear::Count()
+{
+	struct node*temp=head;
+	int icnt=0;
+	while(temp!=NULL)
+	{
+		icnt++;
+		temp=temp->next;
+	}
+	return icnt;
+
+}
+int Singly_Linear::Search(int value)
+{
+	struct node*temp=head;
+	int pos=0;
+	while(temp!=NULL)
+	{
+		pos++;
+		if(temp->data==value)
+		{
+			return pos;
+		}
+		temp=temp->next;
+	}
+	return pos;
+}
+BOOL Singly_Linear::InsertAtPos(int value,int pos)
+{
+	PNODE newn=NULL;
+    newn=new NODE;
+	newn->data=value;
+	newn->next=NULL;
+	if(head==NULL)
+	{
+		head=newn;
+	}
+	else if(pos<0||pos>Count()+1)
+	{
+		return FALSE;
+	}
+	else if(pos==1)
+	{
+		InsertFirst(value);
+	}
+	else if(pos==Count()+1)
+	{
+		InsertLast(value);
+	}
+	else
+	{
+		struct node*temp=head;
+		while(pos-1>1)
+		{
+			temp=temp->next;
+		}
+		newn->next=temp->next;
+		temp->next=newn;
+	}
+}
+BOOL Singly_Linear::DeleteAtPos(int pos)
+{
+	if(head==NULL)
+	{
+	   return FALSE;
+	}
+	else if(pos<0||pos>Count()+1)
+	{
+		return FALSE;
+	}
+	else if(pos==1)
+	{
+		DeleteFirst();
+	}
+	else if(pos==Count())
+	{
+		DeleteLast();
+	}
+	else
+	{
+		struct node*temp1=head;
+		struct node*temp2=NULL;
+		while(pos-1>1)
+		{
+			temp1=temp1->next;
+			pos--;
+		}
+		temp2=temp1->next;
+		temp1->next=temp1->next->next;
+		free(temp2);
+	}
+}
+int main()
+{
+	Singly_Linear obj;
+	obj.InsertFirst(11);
+	obj.InsertFirst(21);
+	obj.InsertFirst(31);
+	obj.InsertFirst(51);
+	obj.DisplayForward();
+	obj.InsertLast(101);
+	obj.DisplayForward();
+	obj.DeleteFirst();
+	obj.DisplayForward();
+	obj.DeleteLast();
+	obj.DisplayForward();
+	int icnt=obj.Count();
+	printf("no.of nodes are: %d\n",icnt);
+	int pos=obj.Search(21);
+	printf("the given node is present at pos:%d\n",pos);
+	obj.InsertAtPos(202,2);
+	obj.DisplayForward();
+	obj.DeleteAtPos(2);
+	printf("Deleted the node successfully\n");
+	obj.DisplayForward();
+	return 0;
+}
